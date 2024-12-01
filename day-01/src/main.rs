@@ -44,7 +44,7 @@ fn vec_to_freq_map(vec: &Vec<i64>) -> HashMap<i64, usize> {
     freq_map
 }
 
-fn get_nth_elements_from_inputs(data: &String, n: usize) -> Vec<i64> {
+fn get_nth_elements_from_inputs(data: &str, n: usize) -> Vec<i64> {
     data.split('\n')
         .filter_map(|line| line.split("   ").nth(n)?.parse::<i64>().ok())
         .into_iter()
