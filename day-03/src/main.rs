@@ -11,8 +11,18 @@ fn main() {
         let mut curr_total = 0;
         let mut count = 0;
         let mut data = fs::read_to_string(path).expect("Should have been able to read the file");
-        data.insert_str(0, "do()");
 
+        /*
+        Handle do/don't commands by doing the following:
+        1. Prepend an explicit "do()" to the start of the data
+        2. Split the data into blocks by occurrences of "don't()" and see if blocks
+           containing "don't()" also contain any "do()" directives
+            a. If yes, then preserve only the instructions after "do()"
+            b. If no, drop the block
+        4. Rejoin the blocks and run the rest of the algo from part 1
+        */
+
+        data.insert_str(0, "do()");
         let mut do_blocks: Vec<String> = data
             .split("don't()")
             .filter_map(|block| {
