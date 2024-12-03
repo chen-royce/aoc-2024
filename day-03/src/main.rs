@@ -4,13 +4,34 @@ fn main() {
     let paths = [
         "inputs/example.txt",
         "inputs/data.txt",
-        "inputs/corner-case.txt",
+        // "inputs/corner-case.txt",
     ];
 
     for path in paths {
         let mut curr_total = 0;
         let mut count = 0;
-        let data = fs::read_to_string(path).expect("Should have been able to read the file");
+        let mut data = fs::read_to_string(path).expect("Should have been able to read the file");
+        data.insert_str(0, "do()");
+
+        let mut do_blocks: Vec<String> = data
+            .split("don't()")
+            .filter_map(|block| {
+                // Check if "do()" is present in the block
+                if let Some(start_doing_idx) = block.find("do()") {
+                    // Slice from "do()" onward and return it
+                    Some(block[start_doing_idx..].to_string())
+                } else {
+                    // Skip the block if "do()" is not found
+                    None
+                }
+            })
+            .collect();
+
+        // Join the modified blocks back into a single string
+        let data = do_blocks.join("");
+
+        println!("{}", data);
+
         let equations: Vec<&str> = data.split("mul(").collect();
 
         for eq in &equations[1..] {
