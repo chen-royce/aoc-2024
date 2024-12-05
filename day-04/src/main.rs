@@ -3,7 +3,7 @@ use std::fs;
 fn main() {
     let paths = [
         "inputs/example.txt",
-        "inputs/example_2.txt",
+        // "inputs/example_2.txt",
         // "inputs/data.txt",
         // "inputs/corner-case.txt",
     ];
@@ -17,6 +17,7 @@ fn main() {
         let height = lines.len();
         let width = lines[0].len();
 
+        // HORIZONTAL
         for horizontal_line in &lines {
             let forward_count = count_occurrences_of_substring(horizontal_line, pattern, 0);
             let backward_count = count_occurrences_of_substring(
@@ -29,6 +30,7 @@ fn main() {
             // println!("Forward: {}, Backward: {}", forward_count, backward_count);
         }
 
+        // VERTICAL
         for column_number in 0..width {
             let downward_line = &lines
                 .iter()
@@ -40,41 +42,74 @@ fn main() {
             // println!("Upward lines: {}", upward_line);
         }
 
-        if height >= width {
-            for row in 0..(height + 1) {
-                // println!("ROW{}", row);
-                let mut diagonal = String::new();
-                let mut curr_row = row;
-                let mut curr_col = 0;
+        // DIAGONAL (DOWN AND RIGHT)
+        // Lower-left half
+        for row in 0..height {
+            let mut diagonal = String::new();
+            let mut curr_row = row;
+            let mut curr_col = 0;
 
-                while curr_row > 0 {
-                    curr_row -= 1;
-                    diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
-                    // println!("{}, {}", curr_row, curr_col);
-                    curr_col += 1;
-                }
-
-                println!("{}", diagonal);
+            while curr_row < height && curr_col < width {
+                diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
+                curr_row += 1;
+                curr_col += 1;
             }
 
-            for col in (1..width).rev() {
-                let mut diagonal = String::new();
-                let mut curr_row = height - 1;
-                let mut curr_col = col;
+            println!("{}", diagonal);
+        }
 
-                while curr_col < width && curr_row > 0 {
-                    diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
-                    curr_row -= 1;
-                    curr_col += 1;
-                }
+        // Upper-right half
+        for col in 1..width {
+            let mut diagonal = String::new();
+            let mut curr_row = 0;
+            let mut curr_col = col;
 
-                println!("{}", diagonal);
+            while curr_row < height && curr_col < width {
+                diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
+                curr_row += 1;
+                curr_col += 1;
             }
-        } else {
-            for col in 0..(width + 1) {
-                let mut diagonal = String::new();
-                let mut curr_row = height - 1;
+
+            println!("{}", diagonal);
+        }
+
+        // DIAGONAL (DOWN AND LEFT)
+        // Bottom-right half
+        for row in 0..height {
+            let mut diagonal = String::new();
+            let mut curr_row = row;
+            let mut curr_col = width - 1;
+
+            while curr_row < height && curr_col >= 0 {
+                diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
+                curr_row += 1;
+                curr_col = if curr_col > 0 {
+                    curr_col - 1
+                } else {
+                    break;
+                };
             }
+
+            println!("{}", diagonal);
+        }
+
+        // Upper-left half
+        for col in (0..width - 1).rev() {
+            let mut diagonal = String::new();
+            let mut curr_row = 0;
+            let mut curr_col = col;
+
+            while curr_row < height && curr_col >= 0 {
+                diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
+                curr_row += 1;
+                curr_col = if curr_col > 0 {
+                    curr_col - 1
+                } else {
+                    break;
+                };
+            }
+
+            println!("{}", diagonal);
         }
 
         // if height >= width {
