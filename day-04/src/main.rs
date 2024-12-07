@@ -3,8 +3,7 @@ use std::fs;
 fn main() {
     let paths = [
         "inputs/example.txt",
-        // "inputs/example_2.txt",
-        // "inputs/data.txt",
+        "inputs/data.txt",
         // "inputs/corner-case.txt",
     ];
 
@@ -17,6 +16,8 @@ fn main() {
         let height = lines.len();
         let width = lines[0].len();
 
+        let mut total_count = 0;
+
         // HORIZONTAL
         for horizontal_line in &lines {
             let forward_count = count_occurrences_of_substring(horizontal_line, pattern, 0);
@@ -26,8 +27,7 @@ fn main() {
                 0,
             );
 
-            // println!("Line: {}", horizontal_line);
-            // println!("Forward: {}, Backward: {}", forward_count, backward_count);
+            total_count += forward_count + backward_count;
         }
 
         // VERTICAL
@@ -40,6 +40,12 @@ fn main() {
 
             let upward_line = downward_line.chars().rev().collect::<String>();
             // println!("Upward lines: {}", upward_line);
+
+            let downward_count = count_occurrences_of_substring(&downward_line, pattern, 0);
+            let upward_count = count_occurrences_of_substring(&upward_line, pattern, 0);
+
+            total_count += downward_count;
+            total_count += upward_count;
         }
 
         // DIAGONAL (DOWN AND RIGHT)
@@ -55,7 +61,13 @@ fn main() {
                 curr_col += 1;
             }
 
-            println!("{}", diagonal);
+            let reverse_diagonal = diagonal.chars().rev().collect::<String>();
+
+            let diagonal_count_1 = count_occurrences_of_substring(&diagonal, pattern, 0);
+            let diagonal_count_2 = count_occurrences_of_substring(&reverse_diagonal, pattern, 0);
+
+            total_count += diagonal_count_1;
+            total_count += diagonal_count_2;
         }
 
         // Upper-right half
@@ -70,7 +82,13 @@ fn main() {
                 curr_col += 1;
             }
 
-            println!("{}", diagonal);
+            let reverse_diagonal = diagonal.chars().rev().collect::<String>();
+
+            let diagonal_count_1 = count_occurrences_of_substring(&diagonal, pattern, 0);
+            let diagonal_count_2 = count_occurrences_of_substring(&reverse_diagonal, pattern, 0);
+
+            total_count += diagonal_count_1;
+            total_count += diagonal_count_2;
         }
 
         // DIAGONAL (DOWN AND LEFT)
@@ -90,7 +108,13 @@ fn main() {
                 };
             }
 
-            println!("{}", diagonal);
+            let reverse_diagonal = diagonal.chars().rev().collect::<String>();
+
+            let diagonal_count_1 = count_occurrences_of_substring(&diagonal, pattern, 0);
+            let diagonal_count_2 = count_occurrences_of_substring(&reverse_diagonal, pattern, 0);
+
+            total_count += diagonal_count_1;
+            total_count += diagonal_count_2;
         }
 
         // Upper-left half
@@ -109,34 +133,16 @@ fn main() {
                 };
             }
 
-            println!("{}", diagonal);
+            let reverse_diagonal = diagonal.chars().rev().collect::<String>();
+
+            let diagonal_count_1 = count_occurrences_of_substring(&diagonal, pattern, 0);
+            let diagonal_count_2 = count_occurrences_of_substring(&reverse_diagonal, pattern, 0);
+
+            total_count += diagonal_count_1;
+            total_count += diagonal_count_2;
         }
 
-        // if height >= width {
-        //     for row in 0..height {
-        //         let mut up_diagonal_line = String::new();
-        //         let mut curr_row = row;
-        //         let mut curr_col: usize = 0;
-        //         while curr_row >= 0 {
-        //             up_diagonal_line.push(lines[row].chars().nth(curr_col).unwrap());
-        //             curr_row -= 1;
-        //             curr_col += 1;
-        //         }
-        //         println!("{}", up_diagonal_line);
-        //     }
-        // } else {
-        //     for col in 0..width {
-        //         let mut up_diagonal_line = String::new();
-        //         let mut curr_col = col;
-        //         let mut curr_row: usize = 0;
-        //         while curr_col >= 0 {
-        //             up_diagonal_line.push(lines[row].chars().nth(curr_col).unwrap());
-        //             curr_col -= 1;
-        //             curr_row += 1;
-        //         }
-        //         println!("{}", up_diagonal_line);
-        //     }
-        // }
+        println!("Total count: {}", total_count);
     }
 }
 
