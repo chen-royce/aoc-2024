@@ -1,6 +1,56 @@
 use std::fs;
 
 fn main() {
+    part_2();
+}
+
+fn part_2() {
+    let paths = [
+        "inputs/example.txt",
+        "inputs/data.txt",
+        // "inputs/corner-case.txt",
+    ];
+
+    for path in paths {
+        let content = fs::read_to_string(path).expect("Should have been able to read the file");
+        let lines: Vec<Vec<char>> = content
+            .split('\n')
+            .map(|line| line.chars().collect())
+            .collect();
+
+        let num_rows = lines.len();
+        let num_cols = lines[0].len();
+
+        let mut count: u32 = 0;
+
+        for r in 1..num_rows - 1 {
+            for c in 1..num_cols - 1 {
+                if lines[r][c] == 'A' && check_part_2_neighbors(&lines, r, c) {
+                    count += 1;
+                }
+            }
+        }
+
+        println!("{}", count);
+    }
+}
+
+fn check_part_2_neighbors(input: &Vec<Vec<char>>, row: usize, col: usize) -> bool {
+    match (
+        input[row + 1][col + 1],
+        input[row - 1][col - 1],
+        input[row + 1][col - 1],
+        input[row - 1][col + 1],
+    ) {
+        ('M', 'S', 'M', 'S') => true,
+        ('S', 'M', 'M', 'S') => true,
+        ('M', 'S', 'S', 'M') => true,
+        ('S', 'M', 'S', 'M') => true,
+        _ => false,
+    }
+}
+
+fn part_1() {
     let paths = [
         "inputs/example.txt",
         "inputs/data.txt",
@@ -98,7 +148,7 @@ fn main() {
             let mut curr_row = row;
             let mut curr_col = width - 1;
 
-            while curr_row < height && curr_col >= 0 {
+            while curr_row < height {
                 diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
                 curr_row += 1;
                 curr_col = if curr_col > 0 {
@@ -123,7 +173,7 @@ fn main() {
             let mut curr_row = 0;
             let mut curr_col = col;
 
-            while curr_row < height && curr_col >= 0 {
+            while curr_row < height {
                 diagonal.push(lines[curr_row].chars().nth(curr_col).unwrap());
                 curr_row += 1;
                 curr_col = if curr_col > 0 {
